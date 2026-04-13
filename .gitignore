@@ -1,0 +1,12 @@
+# IDE folders
+.idea/
+.vscode/
+*.suo
+*.user
+
+# Build folders
+bin/
+obj/
+
+# Avalonia specific
+AppPackages/
