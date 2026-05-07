@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OthelloAI;
 
-public partial class GameView : Window
+public partial class GameView : UserControl
 {
     public GameView()
     {

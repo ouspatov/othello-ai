@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OthelloAI;
 
-public partial class StartScreenView : Window
+public partial class StartScreenView : UserControl
 {
     public StartScreenView()
     {
