@@ -1,8 +1,77 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OthelloAI.StartScreenView">
-  Welcome to Avalonia!
+             xmlns:vm="using:OthelloAI.ViewModels"
+             x:Class="OthelloAI.Views.StartScreenView"
+             x:DataType="vm:StartScreenViewModel">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <Border Background="#E5E9F0" 
+                CornerRadius="30" 
+                Padding="50"
+                Width="450"
+                BoxShadow="0 10 30 0 #20000000">
+            
+            <StackPanel Spacing="25">
+                
+                <TextBlock Text="OTHELLO AI" 
+                           FontSize="42" 
+                           FontWeight="Bold" 
+                           Foreground="#2E3440"
+                           HorizontalAlignment="Center"
+                           LetterSpacing="2"/>
+                
+                <Border Height="3" Background="#88C0D0" Width="80" CornerRadius="1.5" Margin="0, -10, 0, 10"/>
+
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Choose your color:" FontSize="18" Foreground="#2E3440" FontWeight="SemiBold"/>
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <RadioButton Grid.Column="0" Content="Dark (First)" GroupName="ColorGroup" IsChecked="True" 
+                                     Foreground="#2E3440" FontSize="16"/>
+                        <RadioButton Grid.Column="2" Content="Light (Second)" GroupName="ColorGroup" 
+                                     Foreground="#2E3440" FontSize="16"/>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Time per game (minutes):" FontSize="18" Foreground="#2E3440" FontWeight="SemiBold"/>
+                    <ComboBox HorizontalAlignment="Stretch" SelectedIndex="1" CornerRadius="8">
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Spacing="10">
+                    <TextBlock Text="AI Difficulty:" FontSize="18" Foreground="#2E3440" FontWeight="SemiBold"/>
+                    <ComboBox HorizontalAlignment="Stretch" SelectedIndex="1" CornerRadius="8">
+                        <ComboBoxItem>Novice (Depth 2)</ComboBoxItem>
+                        <ComboBoxItem>Master (Depth 4)</ComboBoxItem>
+                        <ComboBoxItem>Grandmaster (Depth 6)</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button Content="START GAME" 
+                        HorizontalAlignment="Stretch" 
+                        HorizontalContentAlignment="Center"
+                        Background="#2E3440" 
+                        Foreground="White" 
+                        FontSize="20" 
+                        FontWeight="Bold"
+                        CornerRadius="15" 
+                        Padding="15"
+                        Margin="0, 15, 0, 0">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="#88C0D0"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+
 </UserControl>

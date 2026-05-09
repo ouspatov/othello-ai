@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace OthelloAI;
+namespace OthelloAI.Views;
 
 public partial class MainWindow : Window
 {

@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OthelloAI;
+namespace OthelloAI.Views;
 
 public partial class GameView : UserControl
 {
