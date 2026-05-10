@@ -2,7 +2,6 @@ namespace OthelloAI.Models;
 
 public static class Evaluator
 {
-    // Матрица весов (оценок) для каждой из 64 клеток доски
     private static readonly int[,] Weights = new int[8, 8]
     {
         { 120, -20,  20,   5,   5,  20, -20, 120 },
@@ -15,7 +14,6 @@ public static class Evaluator
         { 120, -20,  20,   5,   5,  20, -20, 120 }
     };
 
-    // Оценивает, насколько хороша доска для конкретного игрока
     public static int Evaluate(Board board, PlayerColor aiColor)
     {
         int score = 0;
@@ -30,7 +28,6 @@ public static class Evaluator
                 {
                     int weight = Weights[r, c];
                     
-                    // Если фишка наша - прибавляем очки, если вражеская - отнимаем
                     if ((state == CellState.Black && aiColor == PlayerColor.Black) ||
                         (state == CellState.White && aiColor == PlayerColor.White))
                     {

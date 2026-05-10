@@ -15,7 +15,6 @@ public class StartScreenViewModel : ViewModelBase
         set { _isDarkColorSelected = value; OnPropertyChanged(); } 
     }
 
-    // По умолчанию 0 (это первый элемент списка, то есть 10 минут)
     private int _selectedTimeIndex = 0; 
     public int SelectedTimeIndex 
     { 
@@ -40,7 +39,6 @@ public class StartScreenViewModel : ViewModelBase
 
     private void StartGame()
     {
-        // НОВАЯ ЛОГИКА: 0 -> 10 минут, 1 -> 20 минут, 2 -> 30 минут
         int minutes = SelectedTimeIndex switch
         {
             0 => 10, 

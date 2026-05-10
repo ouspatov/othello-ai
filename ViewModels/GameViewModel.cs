@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Threading; // Обязательно для таймера
+using Avalonia.Threading;
 using OthelloAI.Models;
 
 namespace OthelloAI.ViewModels;
@@ -13,14 +13,12 @@ public class GameViewModel : ViewModelBase
     private Board _board;
     private PlayerColor _currentPlayer;
     
-    // === ПЕРЕМЕННЫЕ ИИ ===
     private MinimaxAI _ai;
     private PlayerColor _aiColor; 
     private bool _isAiThinking = false; 
     private int _aiDepth; 
     private PlayerColor _humanColor;
 
-    // === ТАЙМЕР ===
     private DispatcherTimer? _timer;
     private int _secondsLeft;
 
@@ -65,8 +63,6 @@ public class GameViewModel : ViewModelBase
 
     public ICommand CellClickedCommand { get; }
 
-    // === ОБНОВЛЕННЫЙ КОНСТРУКТОР ===
-    // Теперь он принимает время, сложность и цвет игрока из стартового меню
     public GameViewModel(int minutes, int depth, PlayerColor humanColor)
     {
         _board = new Board(); 
@@ -74,15 +70,13 @@ public class GameViewModel : ViewModelBase
         _aiDepth = depth;
         _humanColor = humanColor;
         
-        // ИИ всегда играет противоположным цветом
         _aiColor = (_humanColor == PlayerColor.Black) ? PlayerColor.White : PlayerColor.Black;
         
-        _currentPlayer = PlayerColor.Black; // В Отелло черные всегда ходят первыми
+        _currentPlayer = PlayerColor.Black;
         
         BoardCells = new ObservableCollection<CellViewModel>();
         CellClickedCommand = new RelayCommand<CellViewModel>(OnCellClicked);
 
-        // Настраиваем и запускаем таймер
         _secondsLeft = minutes * 60;
         TimeRemaining = TimeSpan.FromSeconds(_secondsLeft).ToString(@"mm\:ss");
         StartTimer();
@@ -90,7 +84,6 @@ public class GameViewModel : ViewModelBase
         InitializeBoard();
         UpdateUI();
 
-        // Если игрок выбрал белые фишки, ИИ (черные) должен сходить первым
         if (_humanColor == PlayerColor.White)
         {
             _ = LetAIPlay();
@@ -109,7 +102,7 @@ public class GameViewModel : ViewModelBase
             }
             else
             {
-                _timer.Stop(); // Время вышло
+                _timer.Stop();
             }
         };
         _timer.Start();
@@ -129,19 +122,16 @@ public class GameViewModel : ViewModelBase
 
     private async void OnCellClicked(CellViewModel cell)
     {
-        // Блокируем клики, если ИИ думает или сейчас ход ИИ
         if (_isAiThinking || _currentPlayer == _aiColor) return;
 
         if (_board.isValidMove(cell.Row, cell.Column, _currentPlayer))
         {
-            // Ход игрока
             _board.MakeMove(cell.Row, cell.Column, _currentPlayer);
             PlayerMoves.Add($"{cell.Row}, {cell.Column}");
             
             SwitchPlayer();
             UpdateUI();
 
-            // Передаем ход ИИ
             if (_currentPlayer == _aiColor)
             {
                 await LetAIPlay(); 
@@ -152,9 +142,8 @@ public class GameViewModel : ViewModelBase
     private async Task LetAIPlay()
     {
         _isAiThinking = true;
-        await Task.Delay(500); // Небольшая пауза для естественности
+        await Task.Delay(500);
 
-        // Запускаем ИИ в фоне, чтобы окно не зависло
         Move? aiMove = await Task.Run(() => _ai.GetBestMove(_board, _aiDepth, _aiColor));
 
         if (aiMove != null)

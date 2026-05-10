@@ -80,14 +80,12 @@ public class Board
             {
                 CellState current = grid_[currentRow, currentCol];
                 
-                // Found enemy piece, check for trap
                 if (current == oponentsColor)
                 {
                     trap = true;
                     currentRow += dr;
                     currentCol += dc;
                 }
-                // Found own piece, check if we located at least one enemy piece 
                 else if (current == myColor)
                 {
                     if (trap)
@@ -99,10 +97,9 @@ public class Board
                         break;
                     }
                 }
-                // currentCell == CellState.Empty
                 else 
                 {
-                    break; // We hit Empty Space before closing the trap => not a valid move
+                    break;
                 }
             }
         }            
@@ -128,7 +125,6 @@ public class Board
             oponentsColor = CellState.Black;
         }
         
-        // Place a piece
         grid_[row, col] = myColor;
         (int row, int col)[] directions =
         {
@@ -142,7 +138,6 @@ public class Board
             (1, 1)
         };
         
-        // Check for each direction who we trapped
         foreach (var (dr, dc) in directions)
         {
             int currentRow = row + dr;
@@ -150,7 +145,6 @@ public class Board
 
             List<(int r, int c)> piecesToFlip = new List<(int r, int c)>();
             
-            // ИСПРАВЛЕНО 1: Теперь проверяем currentRow и currentCol, а не row и col!
             while (IsOnBoard(currentRow, currentCol))
             {
                 CellState current = grid_[currentRow, currentCol];
@@ -169,7 +163,6 @@ public class Board
                     }
                     break;
                 }
-                // ИСПРАВЛЕНО 2: Если наткнулись на пустую клетку - ловушки нет, прерываем цикл!
                 else 
                 {
                     break;

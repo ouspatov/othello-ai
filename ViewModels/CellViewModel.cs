@@ -1,6 +1,5 @@
 namespace OthelloAI.ViewModels;
 
-// Наследуемся от ViewModelBase, чтобы интерфейс слышал наши изменения
 public class CellViewModel : ViewModelBase
 {
     public int Row { get; }
@@ -10,7 +9,7 @@ public class CellViewModel : ViewModelBase
     public bool HasPiece
     {
         get => _hasPiece;
-        set { _hasPiece = value; OnPropertyChanged(); } // Эта строчка дает команду UI обновиться!
+        set { _hasPiece = value; OnPropertyChanged(); }
     }
 
     private bool _isDark;
