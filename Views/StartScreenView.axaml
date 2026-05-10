@@ -5,7 +5,6 @@
              x:DataType="vm:StartScreenViewModel">
 
     <Grid Background="{DynamicResource MainBg}">
-        
         <Border Background="{DynamicResource CardBg}" 
                 CornerRadius="20" 
                 Padding="50, 40"
@@ -15,9 +14,8 @@
                 BoxShadow="0 8 24 0 #26000000">
             
             <StackPanel Spacing="20">
-                
                 <StackPanel Spacing="10" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <TextBlock Text="OTHELLO AI" 
+                    <TextBlock Text="OTHELLO AI"
                                FontSize="28" 
                                FontWeight="Bold" 
                                LetterSpacing="2"
