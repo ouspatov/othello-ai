@@ -141,14 +141,17 @@ public class Board
             (1, -1),
             (1, 1)
         };
-        // Check for each direction who we traped
+        
+        // Check for each direction who we trapped
         foreach (var (dr, dc) in directions)
         {
             int currentRow = row + dr;
             int currentCol = col + dc;
 
             List<(int r, int c)> piecesToFlip = new List<(int r, int c)>();
-            while (IsOnBoard(row, col))
+            
+            // ИСПРАВЛЕНО 1: Теперь проверяем currentRow и currentCol, а не row и col!
+            while (IsOnBoard(currentRow, currentCol))
             {
                 CellState current = grid_[currentRow, currentCol];
                 if (current == oponentsColor)
@@ -164,6 +167,11 @@ public class Board
                     {
                         grid_[enemyPiece.r, enemyPiece.c] = myColor;
                     }
+                    break;
+                }
+                // ИСПРАВЛЕНО 2: Если наткнулись на пустую клетку - ловушки нет, прерываем цикл!
+                else 
+                {
                     break;
                 }
             }
@@ -211,11 +219,25 @@ public class Board
         } 
         return score;
     }
+
+    public CellState GetCellState(int row, int col)
+    {
+        return grid_[row, col];
+    }
     
-    // TODO: Clone for the MinMax
-    // Board Clone()
-    // {
-        
-    // }
+    public Board Clone()
+    {
+        Board newBoard = new Board();
+
+        for(int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                newBoard.grid_[i, j] = this.grid_[i, j];
+            }
+        }
+
+        return newBoard;
+    }
 
 }

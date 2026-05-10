@@ -17,8 +17,6 @@ public class Move
 
     public override string ToString()
     {
-        char colLetter = (char)('A' - Col);
-        int rowNumber = Row + 1;
-        return $"{Player}: {colLetter}{rowNumber}";
+        return $"{Row}, {Col}";
     }
 } 

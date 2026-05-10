@@ -1,4 +1,5 @@
 namespace OthelloAI.ViewModels;
+using OthelloAI.Models;
 
 public class MainWindowViewModel : ViewModelBase
 {
@@ -18,12 +19,12 @@ public class MainWindowViewModel : ViewModelBase
     // Constructor
     public MainWindowViewModel()
     {
-        currentViewModel_ = new StartScreenViewModel(); // on the lauch init with the StartScreenViewModel
+        currentViewModel_ = new StartScreenViewModel(this); // on the lauch init with the StartScreenViewModel
     }
 
-    public void GoToGame()
+    public void GoToGame(int minutes, int depth, PlayerColor humanColor)
     {
         // Link to the start button, it will change the screen to the GameViewModel
-        CurrentViewModel = new GameViewModel(); 
+        CurrentViewModel = new GameViewModel(minutes, depth, humanColor);
     }
 }
