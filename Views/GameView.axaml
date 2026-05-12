@@ -135,5 +135,45 @@
 
             </StackPanel>
         </Grid>
+        
+        <Grid Background="#CC181B22" IsVisible="{Binding IsGameOver}">
+            <Border Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource DarkPiece}"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="60, 40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BoxShadow="0 10 30 0 #40000000">
+                
+                <StackPanel Spacing="30" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding GameOverMessage}" 
+                               FontSize="48" 
+                               FontWeight="Heavy" 
+                               Foreground="{DynamicResource TextMain}" 
+                               HorizontalAlignment="Center"/>
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+                        <TextBlock Text="Final Score:" FontSize="24" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                        <Ellipse Width="24" Height="24" Fill="{DynamicResource DarkPiece}"/>
+                        <TextBlock Text="{Binding BlackScore}" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextMain}"/>
+                        <TextBlock Text="-" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextMuted}"/>
+                        <TextBlock Text="{Binding WhiteScore}" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextMain}"/>
+                        <Ellipse Width="24" Height="24" Fill="{DynamicResource LightPiece}"/>
+                    </StackPanel>
+
+                    <Button Content="PLAY AGAIN"
+                            Command="{Binding RestartCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Background="{DynamicResource LightPiece}"
+                            Foreground="#FFFFFF"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            CornerRadius="8"
+                            Padding="15"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
