@@ -10,20 +10,18 @@ namespace OthelloAI.ViewModels;
 
 public class GameViewModel : ViewModelBase
 {
-    private Board _board;
+    private Board _board = null!;
     private PlayerColor _currentPlayer;
     
-    // === ПЕРЕМЕННЫЕ ИИ ===
-    private MinimaxAI _ai;
+    private MinimaxAI _ai = null!;
     private PlayerColor _aiColor; 
     private bool _isAiThinking = false; 
     private int _aiDepth; 
     private PlayerColor _humanColor;
 
-    // === ТАЙМЕР И НАСТРОЙКИ ===
     private DispatcherTimer? _timer;
     private int _secondsLeft;
-    private int _startingMinutes; // Запоминаем стартовое время для рестарта
+    private int _startingMinutes;
 
     public ObservableCollection<CellViewModel> BoardCells { get; set; }
     public ObservableCollection<string> PlayerMoves { get; set; } = new();
@@ -64,7 +62,6 @@ public class GameViewModel : ViewModelBase
         set { _whiteScore = value; OnPropertyChanged(); } 
     }
 
-    // === ПЕРЕМЕННЫЕ КОНЦА ИГРЫ ===
     private bool _isGameOver;
     public bool IsGameOver 
     { 
@@ -79,9 +76,9 @@ public class GameViewModel : ViewModelBase
         set { _gameOverMessage = value; OnPropertyChanged(); } 
     }
 
-    // === КОМАНДЫ ===
     public ICommand CellClickedCommand { get; }
     public ICommand RestartCommand { get; } // Новая команда для кнопки PLAY AGAIN
+    public ICommand QuitCommand { get; } // НОВАЯ КОМАНДА ВЫХОДА
 
     public GameViewModel(int minutes, int depth, PlayerColor humanColor)
     {
@@ -93,13 +90,12 @@ public class GameViewModel : ViewModelBase
         BoardCells = new ObservableCollection<CellViewModel>();
         CellClickedCommand = new RelayCommand<CellViewModel>(OnCellClicked);
         
-        // Привязываем кнопку рестарта к методу начала новой игры
         RestartCommand = new RelayCommand<object>(_ => StartNewGame());
+        QuitCommand = new RelayCommand<object>(_ => Environment.Exit(0));
 
-        StartNewGame(); // Запускаем игру при открытии окна
+        StartNewGame();
     }
 
-    // === МЕТОД ЗАПУСКА/ПЕРЕЗАПУСКА ИГРЫ ===
     private void StartNewGame()
     {
         _board = new Board(); 
@@ -119,11 +115,21 @@ public class GameViewModel : ViewModelBase
         _timer?.Stop();
         _secondsLeft = _startingMinutes * 60;
         TimeRemaining = TimeSpan.FromSeconds(_secondsLeft).ToString(@"mm\:ss");
-        StartTimer();
 
+        if (_timer == null) StartTimer();
+
+        // Проверяем, кто ходит первым
         if (_humanColor == PlayerColor.White)
         {
+            // Если человек за белых, то первый ход у ИИ (черные)
+            // Таймер не запускаем, вызываем ход ИИ
+            _timer?.Stop(); 
             _ = LetAIPlay();
+        }
+        else
+        {
+            // Если человек за черных, он ходит первым — запускаем таймер
+            _timer?.Start();
         }
     }
 
@@ -139,7 +145,7 @@ public class GameViewModel : ViewModelBase
             }
             else
             {
-                EndGame("timeout"); // ВАЖНО: Таймер теперь вызывает конец игры!
+                EndGame("timeout");
             }
         };
         _timer.Start();
@@ -157,29 +163,6 @@ public class GameViewModel : ViewModelBase
         }
     }
 
-    private async void OnCellClicked(CellViewModel cell)
-    {
-        // Блокируем клики, если конец игры, ИИ думает, или ход ИИ
-        if (IsGameOver || _isAiThinking || _currentPlayer == _aiColor) return;
-
-        if (_board.isValidMove(cell.Row, cell.Column, _currentPlayer))
-        {
-            _board.MakeMove(cell.Row, cell.Column, _currentPlayer);
-            PlayerMoves.Add($"{cell.Row}, {cell.Column}");
-            
-            SwitchPlayer();
-            UpdateUI();
-
-            // ВАЖНО: Проверяем, не закончилась ли игра после твоего хода!
-            CheckGameOver();
-
-            if (!IsGameOver && _currentPlayer == _aiColor)
-            {
-                await LetAIPlay(); 
-            }
-        }
-    }
-
     private async Task LetAIPlay()
     {
         _isAiThinking = true;
@@ -190,14 +173,13 @@ public class GameViewModel : ViewModelBase
         if (aiMove != null)
         {
             _board.MakeMove(aiMove.Row, aiMove.Col, _aiColor);
-            AIMoves.Add($"{aiMove.Row}, {aiMove.Col}");
+            AIMoves.Add($"{aiMove.Row + 1}, {aiMove.Col + 1}");
         }
 
         SwitchPlayer();
         UpdateUI();
         _isAiThinking = false;
 
-        // ВАЖНО: Проверяем, не закончилась ли игра после хода ИИ!
         CheckGameOver();
     }
 
@@ -206,10 +188,45 @@ public class GameViewModel : ViewModelBase
         _currentPlayer = (_currentPlayer == PlayerColor.Black) ? PlayerColor.White : PlayerColor.Black;
         IsDarkTurn = (_currentPlayer == PlayerColor.Black);
         IsLightTurn = (_currentPlayer == PlayerColor.White);
+
+        // ЛОГИКА ТАЙМЕРА:
+        // Если сейчас ход человека и игра не окончена — запускаем таймер.
+        // В противном случае (ход ИИ) — ставим таймер на паузу.
+        if (_currentPlayer == _humanColor && !IsGameOver)
+        {
+            _timer?.Start();
+        }
+        else
+        {
+            _timer?.Stop();
+        }
+    }
+
+    private async void OnCellClicked(CellViewModel cell)
+    {
+        if (IsGameOver || _isAiThinking || _currentPlayer == _aiColor) return;
+
+        if (_board.isValidMove(cell.Row, cell.Column, _currentPlayer))
+        {
+            _board.MakeMove(cell.Row, cell.Column, _currentPlayer);
+            PlayerMoves.Add($"{cell.Row + 1}, {cell.Column + 1}");
+            
+            SwitchPlayer();
+            UpdateUI();
+
+            CheckGameOver();
+
+            if (!IsGameOver && _currentPlayer == _aiColor)
+            {
+                await LetAIPlay(); 
+            }
+        }
     }
 
     private void UpdateUI()
     {
+        bool isHumanTurn = (_currentPlayer == _humanColor) && !IsGameOver;
+
         for (int r = 0; r < 8; r++)
         {
             for (int c = 0; c < 8; c++)
@@ -222,12 +239,14 @@ public class GameViewModel : ViewModelBase
                     cellVm.HasPiece = false;
                     cellVm.IsDark = false;
                     cellVm.IsLight = false;
+                    cellVm.IsValidMove = isHumanTurn && _board.isValidMove(r, c, _currentPlayer);
                 }
                 else
                 {
                     cellVm.HasPiece = true;
                     cellVm.IsDark = (state == CellState.Black);
                     cellVm.IsLight = (state == CellState.White);
+                    cellVm.IsValidMove = false;
                 }
             }
         }
@@ -236,20 +255,17 @@ public class GameViewModel : ViewModelBase
         WhiteScore = _board.GetScore(PlayerColor.White);
     }
 
-    // === ЛОГИКА КОНЦА ИГРЫ ===
     private void CheckGameOver()
     {
         bool blackHasMoves = _board.HasValidMoves(PlayerColor.Black);
         bool whiteHasMoves = _board.HasValidMoves(PlayerColor.White);
 
-        // Если ни у кого нет ходов - конец игры
         if (!blackHasMoves && !whiteHasMoves)
         {
             EndGame("out_of_moves");
             return;
         }
 
-        // Если у текущего игрока нет ходов, он пропускает ход
         bool currentPlayerHasMoves = _currentPlayer == PlayerColor.Black ? blackHasMoves : whiteHasMoves;
         
         if (!currentPlayerHasMoves)
@@ -265,25 +281,30 @@ public class GameViewModel : ViewModelBase
     private void EndGame(string reason)
     {
         _timer?.Stop();
-        IsGameOver = true; // Триггер для появления карточки
+        IsGameOver = true;
 
         if (reason == "timeout")
         {
-            GameOverMessage = "TIME'S UP! ⏳";
+            GameOverMessage = "TIME'S UP!";
         }
         else
         {
             if (BlackScore > WhiteScore) 
-                GameOverMessage = _humanColor == PlayerColor.Black ? "YOU WIN! 🎉" : "AI WINS! 🤖";
+                GameOverMessage = _humanColor == PlayerColor.Black ? "YOU WIN!" : "AI WINS!";
             else if (WhiteScore > BlackScore) 
-                GameOverMessage = _humanColor == PlayerColor.White ? "YOU WIN! 🎉" : "AI WINS! 🤖";
+                GameOverMessage = _humanColor == PlayerColor.White ? "YOU WIN!" : "AI WINS!";
             else 
-                GameOverMessage = "IT'S A DRAW! 🤝";
+                GameOverMessage = "IT'S A DRAW!";
         }
     }
+
+    public bool IsHumanDark => _humanColor == PlayerColor.Black;
+    public bool IsHumanLight => _humanColor == PlayerColor.White;
+    
+    public bool IsAIDark => _aiColor == PlayerColor.Black;
+    public bool IsAILight => _aiColor == PlayerColor.White;
 }
 
-// === ВАЖНО: ОБНОВЛЕННЫЙ RELAYCOMMAND ===
 public class RelayCommand<T> : ICommand
 {
     private readonly Action<T> _execute;
@@ -294,7 +315,7 @@ public class RelayCommand<T> : ICommand
         if (parameter is T t)
             _execute(t);
         else if (parameter == null)
-            _execute(default!); // Чтобы работала кнопка PLAY AGAIN
+            _execute(default!);
     }
     public event EventHandler? CanExecuteChanged { add { } remove { } }
 }

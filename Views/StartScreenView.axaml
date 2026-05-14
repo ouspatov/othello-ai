@@ -48,6 +48,7 @@
                         <ComboBoxItem>Novice (Depth 2)</ComboBoxItem>
                         <ComboBoxItem>Master (Depth 4)</ComboBoxItem>
                         <ComboBoxItem>Grandmaster (Depth 6)</ComboBoxItem>
+                        <ComboBoxItem>Impossible (Depth 8)</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
 

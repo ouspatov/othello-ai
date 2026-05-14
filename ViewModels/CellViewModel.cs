@@ -34,4 +34,10 @@ public class CellViewModel : ViewModelBase
         IsDark = false;
         IsLight = false;
     }
+    private bool _isValidMove;
+    public bool IsValidMove
+    {
+        get => _isValidMove;
+        set { _isValidMove = value; OnPropertyChanged(); }
+    }
 }

@@ -49,7 +49,7 @@ public class StartScreenViewModel : ViewModelBase
 
         int depth = SelectedDifficultyIndex switch
         {
-            0 => 2, 1 => 4, 2 => 6, _ => 4
+            0 => 2, 1 => 4, 2 => 6, 3 => 8, _ => 4
         };
 
         PlayerColor playerColor = IsDarkColorSelected ? PlayerColor.Black : PlayerColor.White;

@@ -5,6 +5,15 @@
 
     <Application.Styles>
         <FluentTheme />
+        
+        <Style Selector="Button">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
     </Application.Styles>
 
     <Application.Resources>

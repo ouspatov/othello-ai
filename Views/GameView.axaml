@@ -33,16 +33,23 @@
                                         CornerRadius="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch">
-                                    
-                                    <Ellipse Width="35" Height="35" IsVisible="{Binding HasPiece}"
-                                             Classes.dark="{Binding IsDark}"
-                                             Classes.light="{Binding IsLight}">
-                                        <Ellipse.Styles>
-                                            <Style Selector="Ellipse.dark"><Setter Property="Fill" Value="{DynamicResource DarkPiece}"/></Style>
-                                            <Style Selector="Ellipse.light"><Setter Property="Fill" Value="{DynamicResource LightPiece}"/></Style>
-                                        </Ellipse.Styles>
-                                    </Ellipse>
+                                    <Grid>
+                                        <Ellipse Width="35" Height="35" IsVisible="{Binding HasPiece}"
+                                                 Classes.dark="{Binding IsDark}"
+                                                 Classes.light="{Binding IsLight}">
+                                            <Ellipse.Styles>
+                                                <Style Selector="Ellipse.dark"><Setter Property="Fill" Value="{DynamicResource DarkPiece}"/></Style>
+                                                <Style Selector="Ellipse.light"><Setter Property="Fill" Value="{DynamicResource LightPiece}"/></Style>
+                                            </Ellipse.Styles>
+                                        </Ellipse>
 
+                                        <Ellipse Width="12" Height="12" 
+                                                 Fill="{DynamicResource TextMain}" 
+                                                 Opacity="0.3"
+                                                 IsVisible="{Binding IsValidMove}"
+                                                 HorizontalAlignment="Center" 
+                                                 VerticalAlignment="Center"/>   
+                                    </Grid>
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -96,14 +103,30 @@
                         <Border Grid.Row="0" Grid.Column="0" Background="{DynamicResource CardBg}" Margin="0,0,1,1">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
                                 <TextBlock Text="You" FontWeight="Bold" Foreground="{DynamicResource TextMain}" VerticalAlignment="Center"/>
-                                <Ellipse Width="20" Height="20" Fill="{DynamicResource DarkPiece}"/>
+                                
+                                <Ellipse Width="20" Height="20"
+                                         Classes.dark="{Binding IsHumanDark}"
+                                         Classes.light="{Binding IsHumanLight}">
+                                    <Ellipse.Styles>
+                                        <Style Selector="Ellipse.dark"><Setter Property="Fill" Value="{DynamicResource DarkPiece}"/></Style>
+                                        <Style Selector="Ellipse.light"><Setter Property="Fill" Value="{DynamicResource LightPiece}"/></Style>
+                                    </Ellipse.Styles>
+                                </Ellipse>
                             </StackPanel>
                         </Border>
                         
                         <Border Grid.Row="0" Grid.Column="1" Background="{DynamicResource CardBg}" Margin="0,0,0,1">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
                                 <TextBlock Text="AI" FontWeight="Bold" Foreground="{DynamicResource TextMain}" VerticalAlignment="Center"/>
-                                <Ellipse Width="20" Height="20" Fill="{DynamicResource LightPiece}"/>
+                                
+                                <Ellipse Width="20" Height="20"
+                                         Classes.dark="{Binding IsAIDark}"
+                                         Classes.light="{Binding IsAILight}">
+                                    <Ellipse.Styles>
+                                        <Style Selector="Ellipse.dark"><Setter Property="Fill" Value="{DynamicResource DarkPiece}"/></Style>
+                                        <Style Selector="Ellipse.light"><Setter Property="Fill" Value="{DynamicResource LightPiece}"/></Style>
+                                    </Ellipse.Styles>
+                                </Ellipse>
                             </StackPanel>
                         </Border>
 
@@ -137,15 +160,13 @@
         </Grid>
         
         <Grid Background="#CC181B22" IsVisible="{Binding IsGameOver}">
+            
             <Border Background="{DynamicResource CardBg}"
-                    BorderBrush="{DynamicResource DarkPiece}"
-                    BorderThickness="2"
                     CornerRadius="20"
                     Padding="60, 40"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    BoxShadow="0 10 30 0 #40000000">
-                
+                    BoxShadow="0 10 30 0 #40000000"> 
                 <StackPanel Spacing="30" HorizontalAlignment="Center">
                     <TextBlock Text="{Binding GameOverMessage}" 
                                FontSize="48" 
@@ -162,16 +183,29 @@
                         <Ellipse Width="24" Height="24" Fill="{DynamicResource LightPiece}"/>
                     </StackPanel>
 
-                    <Button Content="PLAY AGAIN"
-                            Command="{Binding RestartCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            Background="{DynamicResource LightPiece}"
-                            Foreground="#FFFFFF"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            CornerRadius="8"
-                            Padding="15"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+                        <Button Content="Play Again"
+                                Command="{Binding RestartCommand}"
+                                Width="160"
+                                HorizontalContentAlignment="Center"
+                                Background="{DynamicResource LightPiece}"
+                                Foreground="#FFFFFF"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                CornerRadius="8"
+                                Padding="15"/>
+
+                        <Button Content="Quit Game"
+                                Command="{Binding QuitCommand}"
+                                Width="160"
+                                HorizontalContentAlignment="Center"
+                                Background="{DynamicResource LightPiece}"
+                                Foreground="#FFFFFF"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                CornerRadius="8"
+                                Padding="15"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
